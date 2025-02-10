@@ -11,7 +11,7 @@ import org.example.config.ConfigVar
 fun main() {
     val bot = bot {
 
-        token = ConfigVar.BOT_TOKEN
+        token = ConfigVar().BOT_TOKEN
         timeout = 30
         logLevel = LogLevel.Network.Body
 

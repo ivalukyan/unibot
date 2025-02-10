@@ -20,13 +20,8 @@ dependencies {
     implementation("io.github.kotlin-telegram-bot.kotlin-telegram-bot:telegram:6.3.0")
 
     // Env
-    implementation("io.github.cdimascio:dotenv-java:3.0.0")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 
-    // Lombok
-    implementation("org.projectlombok:lombok:1.18.30")
-    annotationProcessor("org.projectlombok:lombok:1.18.30")
-
-    ksp("org.projectlombok:lombok:1.18.30")
 }
 
 tasks.test {
