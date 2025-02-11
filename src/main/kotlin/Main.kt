@@ -9,7 +9,6 @@ import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 import com.github.kotlintelegrambot.logging.LogLevel
 import org.example.config.ConfigVar
 import java.text.SimpleDateFormat
-import java.time.Clock
 import java.time.LocalDate
 import java.util.*
 import java.util.logging.Logger
