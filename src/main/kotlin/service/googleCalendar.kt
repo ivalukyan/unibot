@@ -5,7 +5,6 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.client.util.DateTime
-import com.google.api.services.calendar.model.Events
 import java.io.FileInputStream
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -38,7 +37,8 @@ object GoogleCalendarService {
 }
 
 @Throws(Exception::class)
-fun getEventsForDate(service: Calendar, date: String): Events {
+fun getEventsForDate(service: Calendar, date: String): String {
+    var res = ""
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val localDate = LocalDate.parse(date, formatter)
     val calendarId = "d78a741606c0a12524e032aee4b4df77d502e7210d8830a84f7c8ea71f36e305@group.calendar.google.com"
@@ -61,9 +61,9 @@ fun getEventsForDate(service: Calendar, date: String): Events {
         .execute()
 
     if (events.items.isEmpty()) {
-        println("На $date событий нет.")
+        val formDate = date.split("-")
+        res = "На ${formDate[2]}-${formDate[1]}-${formDate[0]} событий нет."
     } else {
-        println("События на $date:")
         events.items.forEach { event ->
             val startTime = event.start.dateTime ?: event.start.date
             val endTime = event.end.dateTime ?: event.end.date
@@ -86,10 +86,10 @@ fun getEventsForDate(service: Calendar, date: String): Events {
             val formattedEndTime = endDateTime.format(formatter)
             val description = event.description ?: "Описание отсутствует"
 
-            println("Название события: ${event.summary}\nОписание: ${description}\n" +
-                    "Время: (с $formattedStartTime по $formattedEndTime)\n")
+            res = res + "Название события: ${event.summary}\nОписание: ${description}\n" +
+                    "Время: (с $formattedStartTime по $formattedEndTime)\n\n"
         }
     }
 
-    return events
+    return res
 }
