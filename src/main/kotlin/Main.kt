@@ -9,11 +9,17 @@ import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup
 import com.github.kotlintelegrambot.entities.ParseMode
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 import com.github.kotlintelegrambot.logging.LogLevel
+import getEventsForDate
 import org.example.config.ConfigVar
 import java.time.LocalDate
 import java.util.logging.Logger
 
 fun main() {
+
+    val service = GoogleCalendarService.getCalendarService()
+    val events = getEventsForDate(service, "2025-02-14")
+    println(events)
+
     val bot = bot {
         token = ConfigVar().BOT_TOKEN
         timeout = 30
