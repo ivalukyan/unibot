@@ -90,18 +90,35 @@ fun generateCalendar(year: Int, month: Int): InlineKeyboardMarkup {
         "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
     )[month - 1]
 
+    val firstDayOfMonth = LocalDate.of(year, month, 1).dayOfWeek.value % 7 // 0 = Monday, 6 = Sunday
     val dates: MutableList<List<InlineKeyboardButton>> = mutableListOf()
     var week: MutableList<InlineKeyboardButton> = mutableListOf()
 
+    // Добавляем пустые кнопки перед первым днем месяца
+    for (i in 1 until firstDayOfMonth) {
+        week.add(InlineKeyboardButton.CallbackData(" ", " "))
+    }
+
     for (i in 1..daysInMonth) {
         week.add(InlineKeyboardButton.CallbackData("$i", "date_${year}_${month}_$i"))
-        if (week.size == 7 || i == daysInMonth) {
+        if (week.size == 7) {
             dates.add(week)
             week = mutableListOf()
         }
     }
 
-    println(month)
+    if (week.isNotEmpty()) {
+        dates.add(week)
+    }
+
+    val lastDayOfMonth = LocalDate.of(year, month, daysInMonth).dayOfWeek.value % 7
+    val lastWeekOfMonth = dates.last().toMutableList()
+    val lastIndexDates = dates.lastIndex
+    for (i in 0  until   7 - lastDayOfMonth){
+        lastWeekOfMonth.add(InlineKeyboardButton.CallbackData(" ", " "))
+    }
+
+    dates[lastIndexDates] = lastWeekOfMonth
 
     val prevMonth = if (month == 1) 12 else month - 1
     val prevYear = if (month == 1) year - 1 else year
@@ -114,6 +131,17 @@ fun generateCalendar(year: Int, month: Int): InlineKeyboardMarkup {
             InlineKeyboardButton.CallbackData("⬅️", "back_${prevYear}_${prevMonth}"),
             InlineKeyboardButton.CallbackData("➡️", "next_${nextYear}_${nextMonth}")
         ),
-        *dates.toTypedArray()
+        listOf(
+            InlineKeyboardButton.CallbackData("Пн", " "),
+            InlineKeyboardButton.CallbackData("Вт", " "),
+            InlineKeyboardButton.CallbackData("Ср", " "),
+            InlineKeyboardButton.CallbackData("Чт", " "),
+            InlineKeyboardButton.CallbackData("Пт", " "),
+            InlineKeyboardButton.CallbackData("Сб", " "),
+            InlineKeyboardButton.CallbackData("Вс", " ")
+        ),
+        *dates.toTypedArray(),
+        listOf(InlineKeyboardButton.Url("Файлы", "https://clck.ru/3GLtje"))
     )
 }
+
