@@ -18,7 +18,6 @@ fun main() {
 
     val service = GoogleCalendarService.getCalendarService()
     val events = getEventsForDate(service, "2025-02-14")
-    println(events)
 
     val bot = bot {
         token = ConfigVar().BOT_TOKEN
