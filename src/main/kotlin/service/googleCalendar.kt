@@ -1,10 +1,10 @@
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.calendar.Calendar
 import com.google.api.services.calendar.CalendarScopes
 import com.google.api.client.util.DateTime
+import com.google.auth.http.HttpCredentialsAdapter
+import com.google.auth.oauth2.GoogleCredentials
 import java.io.FileInputStream
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -15,22 +15,22 @@ import java.time.format.FormatStyle
 
 object GoogleCalendarService {
     private const val APPLICATION_NAME = "РКБО-03-22"
-    private val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()
+    private val JSON_FACTORY = GsonFactory.getDefaultInstance()
     private val SCOPES = listOf(CalendarScopes.CALENDAR_READONLY)
 
     @Throws(Exception::class)
-    private fun getCredentials(): GoogleCredential {
-        // Укажите путь к JSON-файлу с ключами сервисного аккаунта
-        val credentialFile = FileInputStream("src/main/resources/cred.json")
+    private fun getCredentials(): GoogleCredentials {
 
-        return GoogleCredential.fromStream(credentialFile)
+        val credentialsStream = FileInputStream("app/resources/cred.json")
+        return GoogleCredentials.fromStream(credentialsStream)
             .createScoped(SCOPES)
     }
 
     @Throws(Exception::class)
     fun getCalendarService(): Calendar {
         val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
-        return Calendar.Builder(httpTransport, JSON_FACTORY, getCredentials())
+        val credentials = getCredentials()
+        return Calendar.Builder(httpTransport, JSON_FACTORY, HttpCredentialsAdapter(credentials))
             .setApplicationName(APPLICATION_NAME)
             .build()
     }
@@ -72,13 +72,13 @@ fun getEventsForDate(service: Calendar, date: String): String {
             val startDateTime = if (event.start.dateTime != null) {
                 LocalDateTime.parse(startTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
             } else {
-                LocalDateTime.parse("${startTime}T00:00:00") // Если это дата без времени, добавляем время
+                LocalDate.parse(startTime.toString(), DateTimeFormatter.ISO_DATE).atStartOfDay()
             }
 
             val endDateTime = if (event.end.dateTime != null) {
                 LocalDateTime.parse(endTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
             } else {
-                LocalDateTime.parse("${endTime}T00:00:00") // Если это дата без времени, добавляем время
+                LocalDate.parse(endTime.toString(), DateTimeFormatter.ISO_DATE).atStartOfDay()
             }
 
             val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM) // или FormatStyle.SHORT/LONG
