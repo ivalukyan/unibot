@@ -22,16 +22,6 @@ class RedisService {
         return user
     }
 
-    fun getAllUsers(): MutableList<MutableMap<String, String>> {
-        val users = commands.keys("user:*")
-        val listUsers: MutableList<MutableMap<String, String>> = mutableListOf()
-        for (u in users) {
-            val user = commands.hgetall(u)
-            listUsers.add(user)
-        }
-        return listUsers
-    }
-
     fun getAllKeys(): MutableList<String>? {
         val keys = commands.keys("user:*")
         return keys
