@@ -28,6 +28,8 @@ dependencies {
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
     implementation("com.google.apis:google-api-services-calendar:v3-rev20250115-2.0.0")
 
+    // Redis
+    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
 }
 
 tasks.test {
