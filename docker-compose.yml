@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   app:
+    container_name: bot
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,6 +11,7 @@ services:
 
   redis:
     image: redis:latest
+    container_name: redis_container
     ports:
       - "6379:6379"
     volumes:
