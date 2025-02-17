@@ -7,16 +7,23 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - redis_service
+      - redis
+    networks:
+      - app_network
 
-  redis_service:
+  redis:
     image: redis:latest
     container_name: uni_redis
     ports:
-      - "6379:6380"
+      - "6380:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - app_network
 
-# Определяем volume для Redis
 volumes:
   redis_data:
+
+networks:
+  app_network:
+    driver: bridge
