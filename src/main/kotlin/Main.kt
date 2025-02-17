@@ -112,10 +112,11 @@ fun main() {
                         val params = data.split("_")
                         when (params[0]) {
                             "access" -> {
-                                val chatId = ConfigVar().admin.toLong()
+                                val adminId = ConfigVar().admin.toLong()
                                 val user = userService.getUser(params[1].toLong())
+                                logger.info("Пользователь с ID ${params[1]} запросил доступ")
                                 bot.sendMessage(
-                                    chatId = ChatId.fromId(chatId),
+                                    chatId = ChatId.fromId(adminId),
                                     text = "Запрошен доступ\n" +
                                             "${user?.get("name")}\n" +
                                             "${user?.get("username")}\n" +
@@ -126,6 +127,7 @@ fun main() {
                             }
                             "approved" -> {
                                 if (params[1] == "yes") {
+                                    logger.info("Пользователь с ID ${params[2]} получил доступ")
                                     userService.updateUser(
                                         id = params[2].toLong(), approved = true
                                     )
@@ -134,6 +136,7 @@ fun main() {
                                         messageId = callbackQuery.message!!.messageId
                                     )
                                 } else {
+                                    logger.info("Пользователь с ID ${params[2]} не получил доступ")
                                     userService.updateUser(
                                         id = params[2].toLong(), approved = false
                                     )
