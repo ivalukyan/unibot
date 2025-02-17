@@ -121,7 +121,7 @@ fun main() {
                                             "${user?.get("username")}\n" +
                                             "${user?.get("dateJoined")}"
                                     ,
-                                    replyMarkup = accessKeyboard(chatId)
+                                    replyMarkup = accessKeyboard(params[1].toLong())
                                 )
                             }
                             "approved" -> {
