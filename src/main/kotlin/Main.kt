@@ -127,6 +127,7 @@ fun main() {
                             }
                             "approved" -> {
                                 if (params[1] == "yes") {
+
                                     logger.info("Пользователь с ID ${params[2]} получил доступ")
                                     userService.updateUser(
                                         id = params[2].toLong(), approved = true
