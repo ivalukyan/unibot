@@ -37,51 +37,66 @@ fun main() {
         dispatch {
             command("start") {
                 val chatId = message.from?.id
-                if (chatId != null) {
-                    val user = userService.getUser(chatId)
-                    if (!user.isNullOrEmpty()) {
-                        if (user["approved"].toBoolean()){
-                            val today = LocalDate.now()
-                            val year = today.year
-                            val month = today.monthValue
+                val today = LocalDate.now()
+                val year = today.year
+                val month = today.monthValue
 
-                            logger.info("Генерация календаря...")
-                            val calendarInlineKeyboard = generateCalendar(year, month)
-                            logger.info("Календарь получен - $calendarInlineKeyboard")
+                logger.info("Генерация календаря...")
+                val calendarInlineKeyboard = generateCalendar(year, month)
+                logger.info("Календарь получен - $calendarInlineKeyboard")
 
-                            bot.sendMessage(
-                                chatId = ChatId.fromId(chatId),
-                                text = "Здравствуйте, ${message.from?.firstName}!\nВыберите дату на календаре:",
-                                replyMarkup = calendarInlineKeyboard,
-                                parseMode = ParseMode.MARKDOWN
-                            )
-                        } else {
-                            bot.sendMessage(
-                                chatId = ChatId.fromId(chatId),
-                                text = "У вас нет доступа к боту, запросите доступ.",
-                                replyMarkup = startKeyboard(chatId)
-                            )
-                        }
-                    } else {
-                        val firstName = message.from?.firstName
-                        val username = message.from?.username
-
-                        if (firstName != null && username != null) {
-                            val createUser = User(
-                                id = chatId,
-                                firstName = firstName,
-                                username = username,
-                                dateJoined = LocalDateTime.now()
-                            )
-                            userService.addUser(createUser)
-                            bot.sendMessage(
-                                chatId = ChatId.fromId(chatId),
-                                text = "У вас нет доступа к боту, запросите доступ.",
-                                replyMarkup = startKeyboard(chatId)
-                            )
-                        }
-                    }
+                chatId?.let { ChatId.fromId(it) }?.let {
+                    bot.sendMessage(
+                        chatId = it,
+                        text = "Здравствуйте, ${message.from?.firstName}!\nВыберите дату на календаре:",
+                        replyMarkup = calendarInlineKeyboard,
+                        parseMode = ParseMode.MARKDOWN
+                    )
                 }
+//                if (chatId != null) {
+//                    val user = userService.getUser(chatId)
+//                    if (!user.isNullOrEmpty()) {
+//                        if (user["approved"].toBoolean()){
+//                            val today = LocalDate.now()
+//                            val year = today.year
+//                            val month = today.monthValue
+//
+//                            logger.info("Генерация календаря...")
+//                            val calendarInlineKeyboard = generateCalendar(year, month)
+//                            logger.info("Календарь получен - $calendarInlineKeyboard")
+//
+//                            bot.sendMessage(
+//                                chatId = ChatId.fromId(chatId),
+//                                text = "Здравствуйте, ${message.from?.firstName}!\nВыберите дату на календаре:",
+//                                replyMarkup = calendarInlineKeyboard,
+//                                parseMode = ParseMode.MARKDOWN
+//                            )
+//                        } else {
+//                            bot.sendMessage(
+//                                chatId = ChatId.fromId(chatId),
+//                                text = "У вас нет доступа к боту, запросите доступ.",
+//                                replyMarkup = startKeyboard(chatId)
+//                            )
+//                        }
+//                    } else {
+//                        val firstName = message.from?.firstName
+//                        val username = message.from?.username
+//
+//                        if (firstName != null && username != null) {
+//                            val createUser = User(
+//                                id = chatId,
+//                                firstName = firstName,
+//                                username = username,
+//                                dateJoined = LocalDateTime.now()
+//                            )
+//                            userService.addUser(createUser)
+//                            bot.sendMessage(
+//                                chatId = ChatId.fromId(chatId),
+//                                text = "У вас нет доступа к боту, запросите доступ.",
+//                                replyMarkup = startKeyboard(chatId)
+//                            )
+//                        }
+//                    }
             }
 
             command("admin"){
